@@ -25,9 +25,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           pattern: "*.ts"
 
-      - name: Vscode plugin release action
+      - name: Vscode package plugin
         uses: JCofman/vscodeaction@master
-        env:
-          PUBLISHER_TOKEN: ${{ secrets.PUBLISHER_TOKEN }}
         with:
-          args: publish -p $PUBLISHER_TOKEN
+          args: package
