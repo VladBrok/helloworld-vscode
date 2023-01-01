@@ -43,7 +43,7 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-        name: package
+          name: package
 
       - name: Vscode release plugin
         uses: JCofman/vscodeaction@master
