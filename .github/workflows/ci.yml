@@ -28,4 +28,15 @@ jobs:
       - name: Vscode package plugin
         uses: JCofman/vscodeaction@master
         with:
-          args: package
+          args: package -o package.vsix
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    name: Release
+    steps:
+      - name: Vscode release plugin
+        uses: JCofman/vscodeaction@master
+        env:
+          PUBLISHER_TOKEN: ${{ secrets.PUBLISHER_TOKEN }}
+        with:
+          args: publish -p $PUBLISHER_TOKEN -i package.vsix
