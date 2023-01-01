@@ -27,5 +27,7 @@ jobs:
 
       - name: Vscode plugin release action
         uses: JCofman/vscodeaction@master
+        env:
+          PUBLISHER_TOKEN: ${{ secrets.PUBLISHER_TOKEN }}
         with:
-          args: publish
+          args: publish -p $PUBLISHER_TOKEN
