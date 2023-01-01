@@ -1,5 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
+import { nanoid } from "nanoid";
 import * as vscode from "vscode";
 
 // This method is called when your extension is activated
@@ -35,7 +36,14 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  context.subscriptions.push(disposable1, disposable2);
+  const disposable3 = vscode.commands.registerCommand(
+    "helloworld.generateId",
+    () => {
+      vscode.window.showInformationMessage(`Unique id: ${nanoid()}`);
+    }
+  );
+
+  context.subscriptions.push(disposable1, disposable2, disposable3);
 }
 
 // This method is called when your extension is deactivated
