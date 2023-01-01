@@ -26,7 +26,6 @@ export function activate(context: vscode.ExtensionContext) {
       vscode.window.showWarningMessage(`Hello, ${name}!`);
     }
   );
-
   const disposable2 = vscode.commands.registerCommand(
     "helloworld.showCurTime",
     () => {
