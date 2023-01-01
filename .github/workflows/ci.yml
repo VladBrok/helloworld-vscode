@@ -26,8 +26,6 @@ jobs:
           pattern: "*.ts"
 
       - name: Vscode plugin release action
-        uses: JCofman/vscodeaction@v3.0.0
-        # env:
-        #   PUBLISHER_TOKEN: ${{ secrets.PUBLISHER_TOKEN }}
-        # with:
-        #   args: publish -p $PUBLISHER_TOKEN
+        uses: JCofman/vscodeaction@master
+        with:
+          args: publish
