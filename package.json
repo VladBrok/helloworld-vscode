@@ -37,7 +37,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/username/repository.git"
+    "url": "git://github.com/VladBrok/helloworld-vscode.git"
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
