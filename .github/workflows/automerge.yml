@@ -11,6 +11,12 @@ on:
       - unlabeled
       - ready_for_review
 
+  workflow_dispatch:
+    inputs:
+      pull-request:
+        description: Pull Request Number
+        required: false
+
 jobs:
   automerge:
     runs-on: ubuntu-latest
