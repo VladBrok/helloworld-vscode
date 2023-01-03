@@ -14,7 +14,7 @@ on:
 jobs:
   automerge:
     runs-on: ubuntu-latest
-    # if: ${{ github.actor == 'dependabot[bot]' }}
+    # if: ${{ github.actor == 'dependabot[bot]' }} 
     steps:
       - uses: reitermarkus/automerge@v2
         with:
