@@ -20,7 +20,6 @@ jobs:
       - run: npm install
 
       - name: Lint
-        if: github.actor == 'dependabot[bot]'
         uses: mooyoul/tslint-actions@v1.1.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
