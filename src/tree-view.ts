@@ -50,6 +50,11 @@ export class NodeDependenciesProvider
       this.getVersion(),
       vscode.TreeItemCollapsibleState.Expanded
     );
+    const child3 = new Dependency(
+      "label",
+      this.getVersion(),
+      vscode.TreeItemCollapsibleState.Expanded
+    );
     const leaf = new Dependency(
       "label",
       this.getVersion(),
@@ -65,10 +70,15 @@ export class NodeDependenciesProvider
 
     this.elements.set(this.rootId, {
       item: root,
-      children: [child, child2],
+      children: [child, child2, child3],
     });
     this.elements.set(child2.id!, {
       item: child2,
+      parentId: this.rootId,
+      children: [],
+    });
+    this.elements.set(child3.id!, {
+      item: child3,
       parentId: this.rootId,
       children: [],
     });
@@ -132,18 +142,11 @@ export class NodeDependenciesProvider
     const transferItem = dataTransfer.get(
       "application/vnd.code.tree.nodeDependencies"
     );
-
-    vscode.window.showInformationMessage(JSON.stringify(transferItem?.value));
-    vscode.window.showInformationMessage(
-      JSON.stringify(target ?? { nope: "nope" })
-    );
-
     if (!transferItem) {
       return;
     }
 
     const droppedItem = transferItem.value as Dependency;
-
     if (target?.id === droppedItem.id) {
       return;
     }
