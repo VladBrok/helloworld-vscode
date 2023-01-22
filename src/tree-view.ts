@@ -26,73 +26,71 @@ export class NodeDependenciesProvider
     Dependency | undefined | null | void
   > = this._onDidChangeTreeData.event;
 
-  constructor(context: vscode.ExtensionContext) {
+  constructor(private readonly context: vscode.ExtensionContext) {
     const view = vscode.window.createTreeView("nodeDependencies", {
       treeDataProvider: this,
       showCollapseAll: true,
       canSelectMany: false,
       dragAndDropController: this,
     });
-    context.subscriptions.push(view);
+    this.context.subscriptions.push(view);
 
-    const root = {
-      id: nanoid(),
-      label: "label",
-      description: this.getVersion(),
-    };
-    const child = {
-      id: nanoid(),
-      label: "label",
-      description: this.getVersion(),
-    };
-    const child2 = {
-      id: nanoid(),
-      label: "label",
-      description: this.getVersion(),
-    };
-    const child3 = {
-      id: nanoid(),
-      label: "label",
-      description: this.getVersion(),
-    };
-    const leaf = {
-      id: nanoid(),
-      label: "label",
-      description: this.getVersion(),
-    };
-    const leaf2 = {
-      id: nanoid(),
-      label: "label",
-      description: this.getVersion(),
-    };
+    // const root = {
+    //   id: nanoid(),
+    //   label: "label",
+    //   description: this.getVersion(),
+    // };
+    // const child = {
+    //   id: nanoid(),
+    //   label: "label",
+    //   description: this.getVersion(),
+    // };
+    // const child2 = {
+    //   id: nanoid(),
+    //   label: "label",
+    //   description: this.getVersion(),
+    // };
+    // const child3 = {
+    //   id: nanoid(),
+    //   label: "label",
+    //   description: this.getVersion(),
+    // };
+    // const leaf = {
+    //   id: nanoid(),
+    //   label: "label",
+    //   description: this.getVersion(),
+    // };
+    // const leaf2 = {
+    //   id: nanoid(),
+    //   label: "label",
+    //   description: this.getVersion(),
+    // };
 
-    this.rootId = root.id!;
+    // this.rootId = root.id!;
 
-    this.elements.set(this.rootId, {
-      item: root,
-      childIds: [child.id!, child2.id!, child3.id!],
-    });
-    this.elements.set(child2.id!, {
-      item: child2,
-      parentId: this.rootId,
-      childIds: [],
-    });
-    this.elements.set(child3.id!, {
-      item: child3,
-      parentId: this.rootId,
-      childIds: [],
-    });
-    this.elements.set(child.id!, {
-      item: child,
-      parentId: root.id,
-      childIds: [leaf.id!, leaf2.id!],
-    });
-    this.elements.set(leaf.id!, { item: leaf, parentId: child.id });
-    this.elements.set(leaf2.id!, { item: leaf2, parentId: child.id });
+    // this.elements.set(this.rootId, {
+    //   item: root,
+    //   childIds: [child.id!, child2.id!, child3.id!],
+    // });
+    // this.elements.set(child2.id!, {
+    //   item: child2,
+    //   parentId: this.rootId,
+    //   childIds: [],
+    // });
+    // this.elements.set(child3.id!, {
+    //   item: child3,
+    //   parentId: this.rootId,
+    //   childIds: [],
+    // });
+    // this.elements.set(child.id!, {
+    //   item: child,
+    //   parentId: root.id,
+    //   childIds: [leaf.id!, leaf2.id!],
+    // });
+    // this.elements.set(leaf.id!, { item: leaf, parentId: child.id });
+    // this.elements.set(leaf2.id!, { item: leaf2, parentId: child.id });
 
-    const str = this.serialize();
-    vscode.window.showInformationMessage(str);
-    this.deserialize(str);
+    this.load();
   }
 
   serialize(): string {
@@ -100,11 +98,29 @@ export class NodeDependenciesProvider
   }
 
   deserialize(json: string): void {
-    this.elements = new Map();
+    this.elements.clear();
     const values = JSON.parse(json);
-    values.map((x: any) => {
+    values.forEach((x: any) => {
       this.elements.set(x.item.id, x);
+      if (!x.parentId) {
+        this.rootId = x.item.id;
+      }
     });
+    vscode.window.showInformationMessage(this.serialize());
+  }
+
+  save() {
+    // set undefined as value to remove
+    this.context.globalState.update(
+      "some-key-definitely-unique",
+      this.serialize()
+    );
+  }
+
+  load() {
+    this.deserialize(
+      this.context.globalState.get("some-key-definitely-unique") || "[]"
+    );
   }
 
   refresh(): void {
@@ -121,6 +137,8 @@ export class NodeDependenciesProvider
     element?: Dependency | undefined
   ): vscode.ProviderResult<Dependency[]> {
     const id = element ? element.id : this.rootId;
+
+    vscode.window.showInformationMessage("showing children...");
 
     if (!id) {
       return [];
@@ -217,6 +235,7 @@ export class NodeDependenciesProvider
     const newParentElement = this.elements.get(newParentId!);
     newParentElement?.childIds?.push(droppedItem.id!);
 
+    this.save();
     this.refresh();
   }
 
