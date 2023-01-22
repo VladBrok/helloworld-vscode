@@ -15,7 +15,28 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "menus": {
+      "view/title": [
+        {
+          "command": "helloworld.refreshTreeView",
+          "when": "view == nodeDependencies",
+          "group": "navigation"
+        }
+      ]
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "nodeDependencies",
+          "name": "Node dependencies"
+        }
+      ]
+    },
     "commands": [
+      {
+        "command": "helloworld.refreshTreeView",
+        "title": "Refresh tree view"
+      },
       {
         "command": "helloworld.helloVlad",
         "title": "Hello Vlad"
