@@ -2,9 +2,9 @@ import { nanoid } from "nanoid";
 import * as vscode from "vscode";
 
 interface TreeElement {
-  item: Dependency;
+  item: { id: string; label: string; description: string };
   parentId?: string;
-  children?: Dependency[];
+  childIds?: string[];
 }
 
 export class NodeDependenciesProvider
@@ -35,60 +35,76 @@ export class NodeDependenciesProvider
     });
     context.subscriptions.push(view);
 
-    const root = new Dependency(
-      "label",
-      this.getVersion(),
-      vscode.TreeItemCollapsibleState.Expanded
-    );
-    const child = new Dependency(
-      "label",
-      this.getVersion(),
-      vscode.TreeItemCollapsibleState.Expanded
-    );
-    const child2 = new Dependency(
-      "label",
-      this.getVersion(),
-      vscode.TreeItemCollapsibleState.Expanded
-    );
-    const child3 = new Dependency(
-      "label",
-      this.getVersion(),
-      vscode.TreeItemCollapsibleState.Expanded
-    );
-    const leaf = new Dependency(
-      "label",
-      this.getVersion(),
-      vscode.TreeItemCollapsibleState.None
-    );
-    const leaf2 = new Dependency(
-      "label",
-      this.getVersion(),
-      vscode.TreeItemCollapsibleState.None
-    );
+    const root = {
+      id: nanoid(),
+      label: "label",
+      description: this.getVersion(),
+    };
+    const child = {
+      id: nanoid(),
+      label: "label",
+      description: this.getVersion(),
+    };
+    const child2 = {
+      id: nanoid(),
+      label: "label",
+      description: this.getVersion(),
+    };
+    const child3 = {
+      id: nanoid(),
+      label: "label",
+      description: this.getVersion(),
+    };
+    const leaf = {
+      id: nanoid(),
+      label: "label",
+      description: this.getVersion(),
+    };
+    const leaf2 = {
+      id: nanoid(),
+      label: "label",
+      description: this.getVersion(),
+    };
 
     this.rootId = root.id!;
 
     this.elements.set(this.rootId, {
       item: root,
-      children: [child, child2, child3],
+      childIds: [child.id!, child2.id!, child3.id!],
     });
     this.elements.set(child2.id!, {
       item: child2,
       parentId: this.rootId,
-      children: [],
+      childIds: [],
     });
     this.elements.set(child3.id!, {
       item: child3,
       parentId: this.rootId,
-      children: [],
+      childIds: [],
     });
     this.elements.set(child.id!, {
       item: child,
       parentId: root.id,
-      children: [leaf, leaf2],
+      childIds: [leaf.id!, leaf2.id!],
     });
     this.elements.set(leaf.id!, { item: leaf, parentId: child.id });
     this.elements.set(leaf2.id!, { item: leaf2, parentId: child.id });
+
+    const str = this.serialize();
+    vscode.window.showInformationMessage(str);
+    this.deserialize(str);
+  }
+
+  serialize(): string {
+    return JSON.stringify([...this.elements.values()]);
+  }
+
+  deserialize(json: string): void {
+    this.elements = new Map();
+    const values = JSON.parse(json);
+    values.map((x: any) => {
+      this.elements.set(x.item.id, x);
+    });
   }
 
   refresh(): void {
@@ -104,11 +120,27 @@ export class NodeDependenciesProvider
   getChildren(
     element?: Dependency | undefined
   ): vscode.ProviderResult<Dependency[]> {
-    if (!element) {
-      return this.elements.get(this.rootId)?.children ?? [];
+    const id = element ? element.id : this.rootId;
+
+    if (!id) {
+      return [];
     }
 
-    return this.elements.get(element?.id ?? "")?.children ?? [];
+    return (
+      this.elements
+        .get(id)
+        ?.childIds?.map(
+          (id) =>
+            new Dependency(
+              this.elements.get(id)?.item.label ?? "",
+              this.elements.get(id)?.item.description ?? "",
+              this.elements.get(id)?.childIds == null
+                ? vscode.TreeItemCollapsibleState.None
+                : vscode.TreeItemCollapsibleState.Expanded,
+              id
+            )
+        ) ?? []
+    );
   }
 
   handleDrag(
@@ -176,16 +208,20 @@ export class NodeDependenciesProvider
     }
 
     const previousParent = this.elements.get(element.parentId!);
-    previousParent?.children?.splice(
-      previousParent.children.findIndex((x) => x.id === droppedItem.id),
+    previousParent?.childIds?.splice(
+      previousParent.childIds.findIndex((id) => id === droppedItem.id),
       1
     );
 
     element.parentId = newParentId;
     const newParentElement = this.elements.get(newParentId!);
-    newParentElement?.children?.push(droppedItem);
+    newParentElement?.childIds?.push(droppedItem.id!);
 
     this.refresh();
+  }
+
+  getFragmentContent(id: string): string {
+    return this.elements.get(id)?.item.description?.toString() ?? "";
   }
 
   private getVersion(): string {
@@ -197,10 +233,20 @@ export class Dependency extends vscode.TreeItem {
   constructor(
     public readonly label: string,
     private version: string,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState
+    public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+    id: string
   ) {
     super(label, collapsibleState);
     this.description = this.version;
-    this.id = nanoid();
+    this.id = id;
+
+    if (collapsibleState === vscode.TreeItemCollapsibleState.None) {
+      this.command = {
+        arguments: [this.id],
+        command: "helloworld.insertCodeFragment",
+        title: "Insert code",
+        tooltip: "Insert code",
+      };
+    }
   }
 }

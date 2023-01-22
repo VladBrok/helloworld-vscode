@@ -25,6 +25,10 @@
     },
     "commands": [
       {
+        "command": "helloworld.insertCodeFragment",
+        "title": "Insert Code fragment"
+      },
+      {
         "command": "helloworld.helloVlad",
         "title": "Hello Vlad"
       },

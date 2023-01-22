@@ -3,12 +3,39 @@ import * as vscode from "vscode";
 import { NodeDependenciesProvider } from "./tree-view";
 
 export function activate(context: vscode.ExtensionContext) {
-  new NodeDependenciesProvider(context);
+  const p = new NodeDependenciesProvider(context);
 
   ////////////////////////
   const name =
     vscode.workspace.getConfiguration().get<string>("helloworld.targetName") ??
     "";
+
+  const disposable0 = vscode.commands.registerCommand(
+    "helloworld.insertCodeFragment",
+    (id: string) => {
+      if (!id) {
+        vscode.window.showInformationMessage(
+          "Insert a code fragment into the editor by clicking on it in the Code Fragments view."
+        );
+      }
+
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        vscode.window.showInformationMessage(
+          "Open a file in the editor to insert a fragment."
+        );
+        return;
+      }
+
+      const content = p.getFragmentContent(id);
+
+      if (content) {
+        editor.edit((builder) => {
+          builder.insert(editor.selection.start, content);
+        });
+      }
+    }
+  );
 
   const disposable1 = vscode.commands.registerCommand(
     "helloworld.helloVlad",
@@ -33,7 +60,12 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  context.subscriptions.push(disposable1, disposable2, disposable3);
+  context.subscriptions.push(
+    disposable0,
+    disposable1,
+    disposable2,
+    disposable3
+  );
 }
 
 export function deactivate() {}
