@@ -10,6 +10,52 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.workspace.getConfiguration().get<string>("helloworld.targetName") ??
     "";
 
+  const disposable00 = vscode.commands.registerCommand(
+    "helloworld.saveSelectedCodeFragment",
+    () => {
+      const showNoTextMsg = () =>
+        vscode.window.showInformationMessage(
+          "Select a piece of code in the editor to save it as a fragment."
+        );
+
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        showNoTextMsg();
+        return;
+      }
+
+      editor.edit(() => {
+        const content = editor.document.getText(editor.selection);
+
+        if (content.length < 1) {
+          showNoTextMsg();
+          return;
+        }
+
+        const config = vscode.workspace.getConfiguration("helloworld");
+
+        const defaultLabel = content.substring(0, 100);
+
+        // TODO: add config option
+        // if (config.get("askForNameOnCreate")) {
+        if (true) {
+          const opt: vscode.InputBoxOptions = {
+            ignoreFocusOut: false,
+            placeHolder: "Code Fragment Name",
+            prompt: "Give the fragment a name...",
+            value: defaultLabel,
+          };
+
+          vscode.window.showInputBox(opt).then((label) => {
+            p.saveNewCodeFragment(content, label);
+          });
+        } else {
+          // fragmentManager.saveNewCodeFragment(content, defaultLabel);
+        }
+      });
+    }
+  );
+
   const disposable0 = vscode.commands.registerCommand(
     "helloworld.insertCodeFragment",
     (id: string) => {
@@ -61,6 +107,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
+    disposable00,
     disposable0,
     disposable1,
     disposable2,

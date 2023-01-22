@@ -109,9 +109,24 @@ export class NodeDependenciesProvider
     vscode.window.showInformationMessage(this.serialize());
   }
 
-  save() {
+  public async saveNewCodeFragment(
+    content: string,
+    label?: string
+  ): Promise<void> {
+    const item = {
+      id: nanoid(),
+      label: label || "untitled",
+      description: content,
+    };
+    this.elements.set(item.id, { item, parentId: this.rootId });
+    this.elements.get(this.rootId)?.childIds?.push(item.id);
+
+    this.save().then(() => this.refresh());
+  }
+
+  async save(): Promise<void> {
     // set undefined as value to remove
-    this.context.globalState.update(
+    await this.context.globalState.update(
       "some-key-definitely-unique",
       this.serialize()
     );
@@ -235,8 +250,7 @@ export class NodeDependenciesProvider
     const newParentElement = this.elements.get(newParentId!);
     newParentElement?.childIds?.push(droppedItem.id!);
 
-    this.save();
-    this.refresh();
+    this.save().then(() => this.refresh());
   }
 
   getFragmentContent(id: string): string {

@@ -15,6 +15,14 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "menus": {
+      "editor/context": [
+        {
+          "command": "helloworld.saveSelectedCodeFragment",
+          "when": "editorTextFocus"
+        }
+      ]
+    },
     "views": {
       "explorer": [
         {
@@ -27,6 +35,10 @@
       {
         "command": "helloworld.insertCodeFragment",
         "title": "Insert Code fragment"
+      },
+      {
+        "command": "helloworld.saveSelectedCodeFragment",
+        "title": "Save Selected Code fragment"
       },
       {
         "command": "helloworld.helloVlad",
