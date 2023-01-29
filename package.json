@@ -18,7 +18,7 @@
     "menus": {
       "editor/context": [
         {
-          "command": "helloworld.saveSelectedCodeFragment",
+          "command": "helloworld.saveToCodeToolbox",
           "when": "editorTextFocus"
         }
       ]

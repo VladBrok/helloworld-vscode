@@ -106,7 +106,6 @@ export class NodeDependenciesProvider
         this.rootId = x.item.id;
       }
     });
-    vscode.window.showInformationMessage(this.serialize());
   }
 
   public async saveNewCodeFragment(
