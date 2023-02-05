@@ -3,7 +3,7 @@
   "displayName": "HelloWorld",
   "description": "BLANK nx",
   "publisher": "VladBrok",
-  "version": "pre-0.2.1",
+  "version": "0.2.1",
   "engines": {
     "vscode": "^1.74.0"
   },
