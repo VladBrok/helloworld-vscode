@@ -28,7 +28,9 @@ jobs:
       - name: Vscode package plugin
         uses: JCofman/vscodeaction@master
         with:
-          args: package -o package.vsix && package -o package-pre.vsix --pre-release
+          args: |
+            package -o package.vsix
+            package -o package-pre.vsix --pre-release
 
       - uses: actions/upload-artifact@v2
         with:
