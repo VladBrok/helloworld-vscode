@@ -60,7 +60,6 @@ jobs:
         with:
           pat: ${{ secrets.OPEN_VSX_TOKEN }}
           extensionFile: package.vsix
-          packagePath: package.vsix
       - name: Publish to Visual Studio Marketplace
         uses: HaaLeo/publish-vscode-extension@v1
         with:
