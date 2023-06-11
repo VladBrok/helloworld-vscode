@@ -65,7 +65,7 @@ jobs:
         with:
           pat: ${{ secrets.PUBLISHER_TOKEN }}
           registryUrl: https://marketplace.visualstudio.com
-          extensionFile: package.vsix____x
+          extensionFile: package.vsix
 
   pre-release:
     if: endsWith(github.ref, '-pre')
