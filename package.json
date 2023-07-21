@@ -3,7 +3,7 @@
   "displayName": "HelloWorld",
   "description": "BLANK nx",
   "publisher": "VladBrok",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -14,64 +14,6 @@
     "onCommand:helloworld.helloWorld"
   ],
   "main": "./out/extension.js",
-  "contributes": {
-    "menus": {
-      "editor/context": [
-        {
-          "command": "helloworld.saveToCodeToolbox",
-          "when": "editorTextFocus"
-        }
-      ]
-    },
-    "views": {
-      "explorer": [
-        {
-          "id": "nodeDependencies",
-          "name": "Node dependencies"
-        }
-      ]
-    },
-    "commands": [
-      {
-        "command": "showState",
-        "title": "Show state"
-      },
-      {
-        "command": "updateState",
-        "title": "Update state"
-      },
-      {
-        "command": "helloworld.insertCodeFragment",
-        "title": "Insert Code fragment"
-      },
-      {
-        "command": "helloworld.saveSelectedCodeFragment",
-        "title": "Save Selected Code fragment"
-      },
-      {
-        "command": "helloworld.helloVlad",
-        "title": "Hello Vlad"
-      },
-      {
-        "command": "helloworld.showCurTime",
-        "title": "Show Current Time"
-      },
-      {
-        "command": "helloworld.generateId",
-        "title": "Generate unique id"
-      }
-    ],
-    "configuration": {
-      "title": "HelloWorld",
-      "properties": {
-        "helloworld.targetName": {
-          "type": "string",
-          "default": "Vlad",
-          "markdownDescription": "Specifies the _hello target_"
-        }
-      }
-    }
-  },
   "repository": {
     "type": "git",
     "url": "git://github.com/VladBrok/helloworld-vscode.git"
