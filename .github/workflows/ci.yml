@@ -68,7 +68,7 @@ jobs:
           extensionFile: package.vsix
 
   pre-release:
-    if: endsWith(github.ref, '-pre')
+    if: endsWith(github.ref, '-pre') 
     needs: build
     runs-on: ubuntu-latest
     name: Pre-release
